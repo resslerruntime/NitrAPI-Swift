@@ -1,0 +1,26 @@
+PODS:
+  - Just (0.4.4)
+  - Nimble (3.0.0)
+  - nitrapi (0.1.0):
+    - Just
+    - ObjectMapper (~> 1.1)
+  - ObjectMapper (1.1.1)
+  - Quick (0.8.0)
+
+DEPENDENCIES:
+  - Nimble (= 3.0.0)
+  - nitrapi (from `../`)
+  - Quick (~> 0.8.0)
+
+EXTERNAL SOURCES:
+  nitrapi:
+    :path: ../
+
+SPEC CHECKSUMS:
+  Just: 138df59892ea185fbc191986cc733bfd09d62cc0
+  Nimble: 4c353d43735b38b545cbb4cb91504588eb5de926
+  nitrapi: 1b014ba4f7b0d937f45954380635ea65b2e10b87
+  ObjectMapper: 4143abed1dbd49b73d75092fe8fa1c88ed6434b7
+  Quick: 563d0f6ec5f72e394645adb377708639b7dd38ab
+
+COCOAPODS: 0.39.0
