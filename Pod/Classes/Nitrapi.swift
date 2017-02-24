@@ -9,7 +9,7 @@ import ObjectMapper
  */
 open class Nitrapi {
     /// Base url of the live api
-    open static let NITRAPI_LIVE_URL: String = "https://dev-api.nitrado.net/"
+    open static let NITRAPI_LIVE_URL: String = "https://api.nitrado.net/"
     
     /// Date formatter used in the mapping functions
     open static var dft: DateFormatterTransform = {
@@ -107,8 +107,6 @@ open class Nitrapi {
         }
         return methods
     }
-    
-    
     
     open func getGames() throws -> GlobalGameList? {
         let data = try client.dataGet("gameserver/games", parameters: [:])
