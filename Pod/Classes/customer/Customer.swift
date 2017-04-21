@@ -11,7 +11,7 @@ open class Customer: Mappable {
     open fileprivate(set) var email: String!
     open fileprivate(set) var credit: Int!
     open fileprivate(set) var currency: String! // TODO: enum?
-    open fileprivate(set) var registred: Date!
+    open fileprivate(set) var registered: Date!
     open fileprivate(set) var language: String!
     /// URL of the avatar
     open fileprivate(set) var avatar: String!
@@ -30,7 +30,7 @@ open class Customer: Mappable {
         email       <- map["email"]
         credit      <- map["credit"]
         currency    <- map["currency"]
-        registred   <- (map["registred"], Nitrapi.dft)
+        registered   <- (map["registered"], Nitrapi.dft)
         language    <- map["language"]
         avatar      <- map["avatar"]
         profile     <- map["profile"]
