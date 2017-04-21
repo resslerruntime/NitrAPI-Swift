@@ -108,8 +108,6 @@ open class Nitrapi {
         return methods
     }
     
-    
-    
     open func getGames() throws -> GlobalGameList? {
         let data = try client.dataGet("gameserver/games", parameters: [:])
         return Mapper<GlobalGameList>().map(JSON: data?["games"] as! [String : Any])
