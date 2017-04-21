@@ -10,7 +10,7 @@ internal func createService(_ data: NSDictionary) throws -> Service? {
         case "clanpage":
             service = Mapper<Clanpage>().map(JSON: data as! [String : Any])
         case "cloud_server":
-            service = Mapper<Cloud_server>().map(JSON: data as! [String : Any])
+            service = Mapper<CloudServer>().map(JSON: data as! [String : Any])
         case "gameserver":
             service = Mapper<Gameserver>().map(JSON: data as! [String : Any])
         case "rootserver":

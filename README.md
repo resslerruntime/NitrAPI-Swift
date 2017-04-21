@@ -1,6 +1,5 @@
 # nitrapi
 
-[![CI Status](http://img.shields.io/travis/Stefan Hanssen/nitrapi.svg?style=flat)](https://travis-ci.org/Stefan Hanssen/nitrapi)
 [![Version](https://img.shields.io/cocoapods/v/nitrapi.svg?style=flat)](http://cocoapods.org/pods/nitrapi)
 [![License](https://img.shields.io/cocoapods/l/nitrapi.svg?style=flat)](http://cocoapods.org/pods/nitrapi)
 [![Platform](https://img.shields.io/cocoapods/p/nitrapi.svg?style=flat)](http://cocoapods.org/pods/nitrapi)
