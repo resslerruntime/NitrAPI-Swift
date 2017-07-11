@@ -1,3 +1,4 @@
+import Foundation
 open class PartPricing: Pricing {
     
     var parts: [String: Int]
@@ -15,10 +16,22 @@ open class PartPricing: Pricing {
         return try getPrices().parts!
     }
     
-    open override func getPrice(_ service: Int, rentalTime: Int) throws -> Int {
+    open override func getPrice(_ service: Service?, rentalTime: Int) throws -> Int {
+        var rentalTime2 = rentalTime
         let prices = try getPrices(service)
         
-        var totalPrice: Int = 0
+        var totalPrice: Double = 0
+        var multiply: Double = 1
+        
+        if prices.hasDynamicRentalTimes() {
+            if rentalTime2 % prices.minRentalTime != 0 {
+                throw NitrapiError.nitrapiException(message: "Rental time \(rentalTime2) is invalid (Modulo \(prices.minRentalTime))", errorId: nil)
+            }
+            multiply = Double(rentalTime2 / prices.minRentalTime)
+            rentalTime2 = prices.minRentalTime
+        }
+        
+        
         for part in prices.parts! {
             if !parts.keys.contains(part.type) {
                 throw NitrapiError.nitrapiException(message: "No amount selected for \(part.type as String)", errorId: nil)
@@ -31,9 +44,9 @@ open class PartPricing: Pricing {
                 throw NitrapiError.nitrapiException(message: "The amount \(amount as Int) of type \(part.type as String) is too big.", errorId: nil)
             }
             
-            var localPrice = -1
+            var localPrice: Double = -1
             for rentalOption in part.rentalTimes! {
-                if rentalOption.hours == rentalTime {
+                if rentalOption.hours == rentalTime2 {
                     for price in rentalOption.prices {
                         if price.count == amount {
                             localPrice = price.price
@@ -54,9 +67,10 @@ open class PartPricing: Pricing {
             totalPrice += localPrice
         }
         
-        totalPrice -= prices.advice
+        totalPrice *= multiply
         
-        return totalPrice
+        
+        return calcAdvicePrice(price: round(totalPrice), advice: Double(prices.advice), service: service)
     }
     
     open override func orderService(_ rentalTime: Int) throws {
@@ -73,16 +87,16 @@ open class PartPricing: Pricing {
             params["additionals[\(key)"] = value
         }
         
-        try nitrapi.client.dataPost("order/order/\(product as String)", parameters: params)
+        _ = try nitrapi.client.dataPost("order/order/\(product as String)", parameters: params)
     }
     
-    open override func switchService(_ service: Int, rentalTime: Int) throws {
+    open override func switchService(_ service: Service?, rentalTime: Int) throws {
         var params = [
-            "price": "\(try getPrice(rentalTime))",
+            "price": "\(try getSwitchPrice(service, rentalTime: rentalTime))",
             "rental_time": "\(rentalTime)",
             "location": "\(locationId)",
             "method": "switch",
-            "service_id": "\(service)"
+            "service_id": "\((service?.id)! as Int)"
         ]
         for (key, value) in self.parts {
             params["parts[\(key)"] = "\(value)"
@@ -92,7 +106,7 @@ open class PartPricing: Pricing {
             params["additionals[\(key)"] = value
         }
         
-        try nitrapi.client.dataPost("order/order/\(product as String)", parameters: params)
+        _ = try nitrapi.client.dataPost("order/order/\(product as String)", parameters: params)
     }
     
 }

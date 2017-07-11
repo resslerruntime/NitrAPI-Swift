@@ -22,7 +22,7 @@ open class DimensionPricing: Pricing {
         dimensions = [:]
     }
     
-    open override func getPrice(_ service: Int, rentalTime: Int) throws -> Int {
+    open override func getPrice(_ service: Service?, rentalTime: Int) throws -> Int {
         let information = try getPrices(service)
         
         let prices = information.prices
@@ -43,13 +43,7 @@ open class DimensionPricing: Pricing {
         
         let price = prices![calcPath(dims)]
         if let price = price as? PriceDimensionValue {
-            var cost = price.value
-            var advice = information.advice ?? 0
-            if advice > cost {
-                advice -= Int(Double(advice - cost) * (50.0 / 100.0))
-            }
-            cost -= advice
-            return cost
+            return Int(calcAdvicePrice(price: Double(price.value), advice: Double(information.advice), service: service))
         }
         throw NitrapiError.nitrapiException(message: "Misformated json for dimension \(calcPath(dims))", errorId: nil)
     }
@@ -68,17 +62,18 @@ open class DimensionPricing: Pricing {
             params["additionals[\(key)"] = value
         }
         
-        try nitrapi.client.dataPost("order/order/\(product as String)", parameters: params)
+        _ = try nitrapi.client.dataPost("order/order/\(product as String)", parameters: params)
     }
     
-    open override func switchService(_ service: Int, rentalTime: Int) throws {
+    open override func switchService(_ service: Service, rentalTime: Int) throws {
         var params = [
-            "price": "\(try getPrice(rentalTime))",
+            "price": "\(try getSwitchPrice(service, rentalTime: rentalTime))",
             "rental_time": "\(rentalTime)",
             "location": "\(locationId)",
             "method": "switch",
-            "service_id": "\(service)"
+            "service_id": "\(service.id as Int)"
         ]
+        
         for (key, value) in self.dimensions {
             params["dimensions[\(key)"] = value
         }
@@ -87,6 +82,6 @@ open class DimensionPricing: Pricing {
             params["additionals[\(key)"] = value
         }
         
-        try nitrapi.client.dataPost("order/order/\(product as String)", parameters: params)
+        _ = try nitrapi.client.dataPost("order/order/\(product as String)", parameters: params)
     }
 }

@@ -77,8 +77,12 @@ open class Nitrapi {
             for svc in data {
                 let service = try createService(svc)
                 if let service = service {
-                    try service.postInit(self) // attach nitrapi
-                    services.append(service)
+                    do {
+                        try service.postInit(self) // attach nitrapi
+                        services.append(service)
+                    } catch {
+                        print(error.localizedDescription)
+                    }
                 }
             }
         }
@@ -113,6 +117,31 @@ open class Nitrapi {
         return Mapper<GlobalGameList>().map(JSON: data?["games"] as! [String : Any])
     }
     
+    /// Returns the full list of available images.
+    /// - returns:
+    open func getImages() throws -> [CloudServer.Image]? {
+        let data = try client.dataGet("information/cloud_servers/images", parameters: [:])
+        
+        let images = Mapper<CloudServer.Image>().mapArray(JSONArray: data?["images"] as! [[String : Any]])
+        return images
+    }
+    
+    open func getSSHKeys() throws -> SSHKeys? {
+        let data = try client.dataGet("user/ssh_keys", parameters: [:])
+        
+        let keys = Mapper<SSHKeys>().map(JSON: data as! [String : Any])
+        keys?.postInit(self)
+        return keys
+    }
+    
+    open func getAccessToken() throws -> AccessToken? {
+        let data = try client.dataGet("token", parameters: [:])
+        
+        let images = Mapper<AccessToken>().map(JSON: data?["token"] as! [String : Any])
+        return images
+    }
+
+    
     // MARK: - Rate Limits
     
     /// Returns the current limit of requests per hour for each user.
@@ -135,7 +164,7 @@ open class Nitrapi {
     
     /// Returns true if the api is operating as expecting.
     open func ping() throws -> Bool {
-        try client.dataGet(nitrapiUrl + "ping", parameters: [:])
+        _ = try client.dataGet(nitrapiUrl + "ping", parameters: [:])
         return true
     }
     
