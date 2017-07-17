@@ -61,6 +61,12 @@ public enum Role: String {
     /// Can change server settings
     case ROLE_WEBINTERFACE_SETTINGS_WRITE
     
+    /// Can edit the server page
+    case ROLE_WEBINTERFACE_SERVERPAGE_EDIT
+    
+    /// Can execute live command
+    case ROLE_WEBINTERFACE_LIVE_COMMANDS
+    
     /// Can authorize the support
     case ROLE_SUPPORT_AUTHORIZATION
 }
