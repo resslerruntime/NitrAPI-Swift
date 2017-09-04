@@ -2,26 +2,26 @@ import ObjectMapper
 
 open class FileEntry: Mappable {
     
-    public enum FileType: String {
+    public class FileType: Value {
         /// This entry is a file.
-        case FILE = "file"
+        public static let FILE = FileType("file")
         /// This entry is a directory.
-        case DIR = "dir"
+        public static let DIR = FileType("dir")
     }
     
     // MARK: - Attributes
     
-    open fileprivate(set) var type: FileType!
-    open fileprivate(set) var path: String!
-    open fileprivate(set) var name: String!
-    open fileprivate(set) var size: Int!
-    open fileprivate(set) var owner: String!
-    open fileprivate(set) var group: String!
+    open fileprivate(set) var type: FileType?
+    open fileprivate(set) var path: String?
+    open fileprivate(set) var name: String?
+    open fileprivate(set) var size: Int?
+    open fileprivate(set) var owner: String?
+    open fileprivate(set) var group: String?
     /// Access rights of this file in chmod notation.
-    open fileprivate(set) var chmod: String!
-    open fileprivate(set) var createdAt: Int! // TODO: change these to date someday?
-    open fileprivate(set) var modifiedAt: Int!
-    open fileprivate(set) var accessedAt: Int!
+    open fileprivate(set) var chmod: String?
+    open fileprivate(set) var createdAt: Int? // TODO: change these to date someday?
+    open fileprivate(set) var modifiedAt: Int?
+    open fileprivate(set) var accessedAt: Int?
     
     // MARK: - Initialization
     
@@ -36,7 +36,7 @@ open class FileEntry: Mappable {
     }
     
     open func mapping(map: Map) {
-        type        <- (map["type"], EnumTransform<FileType>())
+        type        <- (map["type"], ValueTransform<FileType>())
         path        <- map["path"]
         name        <- map["name"]
         size        <- map["size"]

@@ -2,17 +2,17 @@ import ObjectMapper
 
 open class Voiceserver: Service {
     
-    public enum VoiceserverType: String {
-        case TEAMSPEAK3 = "teamspeak3"
-        case MUMBLE = "mumble"
-        case VENTRILO = "ventrilo"
+    public class VoiceserverType: Value {
+        public static let TEAMSPEAK3 = VoiceserverType("teamspeak3")
+        public static let MUMBLE = VoiceserverType("mumble")
+        public static let VENTRILO = VoiceserverType("ventrilo")
     }
     
     open fileprivate(set) var voiceserverType: VoiceserverType?
-    open fileprivate(set) var ip: String!
-    open fileprivate(set) var port: Int!
-    open fileprivate(set) var slots: Int!
-    open fileprivate(set) var started: Bool!
+    open fileprivate(set) var ip: String?
+    open fileprivate(set) var port: Int?
+    open fileprivate(set) var slots: Int?
+    open fileprivate(set) var started: Bool?
     open fileprivate(set) var specific: AnyObject? // TODO: elaborate
     
     
@@ -26,7 +26,7 @@ open class Voiceserver: Service {
         }
         
         func mapping(map: Map) {
-            parent.voiceserverType <- (map["type"], EnumTransform<VoiceserverType>())
+            parent.voiceserverType <- (map["type"], ValueTransform<VoiceserverType>())
             parent.ip              <- map["ip"]
             parent.port            <- map["port"]
             parent.slots           <- map["slots"]

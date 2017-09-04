@@ -3,36 +3,36 @@ import ObjectMapper
 open class Service: Mappable {
     internal var nitrapi: Nitrapi!
     
-    public enum ServiceType: String {
-        case BOUNCER = "bouncer"
-        case CLANPAGE = "clanpage"
-        case CLOUDSERVER = "cloud_server"
-        case GAMESERVER = "gameserver"
-        case ROOTSERVER = "rootserver"
-        case STORAGE = "storage"
-        case VOICESERVER = "voiceserver"
-        case WEBSPACE = "webspace"
+    public class ServiceType: Value {
+        public static let BOUNCER = ServiceType("bouncer")
+        public static let CLANPAGE = ServiceType("clanpage")
+        public static let CLOUDSERVER = ServiceType("cloud_server")
+        public static let GAMESERVER = ServiceType("gameserver")
+        public static let ROOTSERVER = ServiceType("rootserver")
+        public static let STORAGE = ServiceType("storage")
+        public static let VOICESERVER = ServiceType("voiceserver")
+        public static let WEBSPACE = ServiceType("webspace")
     }
     
-    public enum Status: String {
+    public class Status: Value {
         /// The service is active and useable
-        case ACTIVE = "active"
+        public static let ACTIVE = Status("active")
         /// The service is currently installing
-        case INSTALLING = "installing"
+        public static let INSTALLING = Status("installing")
         /// The service is suspended and can be reactivated
-        case SUSPENDED = "suspended"
+        public static let SUSPENDED = Status("suspended")
         /// The service is admin locked, please contact support
-        case ADMINLOCKED = "adminlocked"
+        public static let ADMINLOCKED = Status("adminlocked")
         /// The service is admin locked and suspended
-        case ADMINLOCKED_SUSPENDED = "adminlocked_suspended"
+        public static let ADMINLOCKED_SUSPENDED = Status("adminlocked_suspended")
         /// The service is deleted
-        case DELETED = "deleted"
+        public static let DELETED = Status("deleted")
         
         // These statuses are set by fixServiceStatus() if suspendDate or deleteDate are in the past.
         /// The service is currently being suspended.
-        case SUSPENDING
+        public static let SUSPENDING = Status("suspending")
         /// The service is currently being deleted.
-        case DELETING
+        public static let DELETING = Status("deleting")
     }
     
     // MARK: - Attributes
@@ -41,12 +41,12 @@ open class Service: Mappable {
     open fileprivate(set) var startDate: Date?
     open fileprivate(set) var suspendDate: Date?
     open fileprivate(set) var deleteDate: Date?
-    open fileprivate(set) var userId: Int!
-    open fileprivate(set) var type: ServiceType!
-    open fileprivate(set) var username: String!
+    open fileprivate(set) var userId: Int?
+    open fileprivate(set) var type: ServiceType?
+    open fileprivate(set) var username: String?
     open fileprivate(set) var comment: String?
-    open fileprivate(set) var autoExtension: Bool!
-    open fileprivate(set) var typeHuman: String!
+    open fileprivate(set) var autoExtension: Bool?
+    open fileprivate(set) var typeHuman: String?
     open fileprivate(set) var details: ServiceDetails?
     open fileprivate(set) var roles: [Role]?
     open fileprivate(set) var status: Status?
@@ -63,14 +63,14 @@ open class Service: Mappable {
         suspendDate                 <- (map["suspend_date"], Nitrapi.dft)
         deleteDate                  <- (map["delete_date"],  Nitrapi.dft)
         userId                      <-  map["user_id"]
-        type                        <-  map["type"] // TODO: enum transform?
+        type                        <- (map["type"], ValueTransform<ServiceType>())
         username                    <-  map["username"]
         comment                     <-  map["comment"]
         autoExtension               <-  map["auto_extension"]
         typeHuman                   <-  map["type_human"]
         details                     <-  map["details"]
-        roles                       <- (map["roles"], EnumTransform<Role>())
-        status                      <- (map["status"], EnumTransform<Status>())
+        roles                       <- (map["roles"], ValueTransform<Role>())
+        status                      <- (map["status"], ValueTransform<Status>())
         
     }
     
