@@ -48,7 +48,7 @@ open class Voiceserver: Service {
     }
     
     
-    open func refresh() throws {
+    open override func refresh() throws {
         let data = try nitrapi.client.dataGet("services/\(id as Int)/voiceservers", parameters: [:])
         let infos = VoiceserverInfo()
         infos.parent = self

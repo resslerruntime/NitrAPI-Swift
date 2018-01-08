@@ -42,7 +42,7 @@ open class Bouncer: Service {
         }
     }
     
-    open func refresh() throws {
+    open override func refresh() throws {
         let data = try nitrapi.client.dataGet("services/\(id as Int)/bouncers", parameters: [:])
         let infos = BouncerInfo()
         infos.parent = self

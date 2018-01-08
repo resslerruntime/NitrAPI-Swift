@@ -264,7 +264,7 @@ open class Gameserver: Service {
     
     
     
-    open func refresh() throws {
+    open override func refresh() throws {
         let data = try nitrapi.client.dataGet("services/\(id as Int)/gameservers", parameters: [:])
         let infos = GameserverInfo()
         infos.parent = self

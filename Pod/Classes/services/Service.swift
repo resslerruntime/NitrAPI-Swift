@@ -139,6 +139,10 @@ open class Service: Mappable {
         self.autoExtension = autoExtension
     }
     
+    open func refresh() throws {
+        
+    }
+    
     /// Sets the status correctly if suspendDate or deleteDate are in the past.
     func fixServiceStatus() {
         let now = Date()

@@ -477,7 +477,7 @@ open class CloudServer: Service {
         return traffic
     }
     
-    open func refresh() throws {
+    open override func refresh() throws {
         let data = try nitrapi.client.dataGet("services/\(id as Int)/cloud_servers", parameters: [:])
         let datas = CloudServerData()
         datas.parent = self

@@ -49,7 +49,7 @@ open class Webspace: Service {
         }
     }
     
-    open func refresh() throws {
+    open override func refresh() throws {
         let data = try nitrapi.client.dataGet("services/\(id as Int)/webspaces", parameters: [:])
         let infos = WebspaceInfo()
         infos.parent = self
