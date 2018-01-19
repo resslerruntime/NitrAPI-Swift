@@ -95,7 +95,16 @@ open class ProductionHttpClient {
         if let statusCode = res.statusCode {
             switch statusCode {
             case 401:
-                throw NitrapiError.nitrapiAccessTokenInvalidException(message: message)
+                if let result = parsedObject as? NSDictionary {
+                    if let data = result["data"] as? NSDictionary {
+                        if let error_code = data["error_code"] as? String {
+                            if error_code.starts(with: "access_token_") {
+                                throw NitrapiError.nitrapiAccessTokenInvalidException(message: message)
+                            }
+                        }
+                    }
+                }
+                throw NitrapiError.nitrapiException(message: message, errorId: errorId)
             case 428:
                 throw NitrapiError.nitrapiConcurrencyException(message: message)
             case 503:
