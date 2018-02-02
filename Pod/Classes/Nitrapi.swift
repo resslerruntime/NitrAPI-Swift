@@ -139,6 +139,24 @@ open class Nitrapi {
         return images
     }
 
+    open func getCountries() throws -> [String:String]? {
+        let data = try client.dataGet("countries", parameters: [:])
+
+        return data?["countries"] as! [String : String]
+    }
+
+    open func getStates() throws -> [String:String]? {
+        let data = try client.dataGet("countries/states", parameters: [:])
+
+        return data?["states"] as! [String : String]
+    }
+
+    open func getTimezones() throws -> [String:[String]]? {
+        let data = try client.dataGet("timezones", parameters: [:])
+
+        return data?["timezones"] as! [String : [String]]
+    }
+
     
     // MARK: - Rate Limits
     
