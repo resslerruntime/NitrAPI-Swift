@@ -1,25 +1,24 @@
 import ObjectMapper
 
+/// This class represents a datapoint of a DDoS-attack statistic.
 open class DDoSStat: Mappable {
-    
-    // MARK: - Attributes
-    
-    open fileprivate(set) var datetime: Date?
-    /// packets-per-second
-    open fileprivate(set) var pps: Int?
-    open fileprivate(set) var bandwidth: Int?
-    
-    // MARK: - Initialization
-    
-    public required init?(map: Map) {
-        
-    }
-    
-    open func mapping(map: Map) {
-        datetime    <- (map["datetime"], Nitrapi.dft)
-        pps         <- map["pps"]
-        bandwidth   <- map["bandwidth"]
-    }
-    
-}
 
+    /// Returns the date of this datapoint.
+    open fileprivate(set) var datetime: Date?
+    /// Returns the packets-per-second at this datapoint.
+    open fileprivate(set) var pps: Int?
+    /// Returns the bandwidth at this datapoint.
+    open fileprivate(set) var bandwidth: Int?
+
+    init() {
+    }
+
+    required public init?(map: Map) {
+    }
+
+    public func mapping(map: Map) {
+        datetime <- (map["datetime"], Nitrapi.dft)
+        pps <- map["pps"]
+        bandwidth <- map["bandwidth"]
+    }
+}

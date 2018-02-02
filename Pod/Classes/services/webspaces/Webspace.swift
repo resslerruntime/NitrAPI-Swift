@@ -1,67 +1,92 @@
 import ObjectMapper
 
+/// This class represents a Webspace.
 open class Webspace: Service {
-    
-    open fileprivate(set) var name: String?
-    open fileprivate(set) var maxSpace: Int?
-    open fileprivate(set) var maxDomains: Int?
-    open fileprivate(set) var maxMailAccounts: Int?
-    open fileprivate(set) var maxFtpAccounts: Int?
-    open fileprivate(set) var maxDatabases: Int?
+
+    /// Returns name.
+    open fileprivate(set) var name: String!
+    /// Returns quota.
+    open fileprivate(set) var quota: Quota?
+    /// Returns domains.
     open fileprivate(set) var domains: [Domain]?
-    
-    
-    open class Domain: Mappable {
-        open fileprivate(set) var domain: String?
-        open fileprivate(set) var expires: String?
-        open fileprivate(set) var paidUntil: String?
-        open fileprivate(set) var status: String?
-        
-        public required init?(map: Map) {
+
+    class WebspaceData : Mappable {
+        weak var parent: Webspace!
+        init() {
         }
-        
-        open func mapping(map: Map) {
-            domain      <- map["domain"]
-            expires     <- map["expires"]
-            paidUntil   <- map["paid_until"]
-            status      <- map["status"]
+
+        required init?(map: Map) {
+        }
+
+        func mapping(map: Map) {
+            parent.name <- map["name"]
+            parent.quota <- map["quota"]
+            parent.domains <- map["domains"]
         }
     }
 
-    
-    class WebspaceInfo: Mappable {
-        weak var parent: Webspace!
-        // MARK: - Initialization
+    /// This class represents a quota.
+    open class Quota: Mappable {
+        /// Returns maxSpace.
+        open fileprivate(set) var maxSpace: Int?
+        /// Returns maxDomains.
+        open fileprivate(set) var maxDomains: Int?
+        /// Returns maxMailAccounts.
+        open fileprivate(set) var maxMailAccounts: Int?
+        /// Returns maxFtpAccounts.
+        open fileprivate(set) var maxFtpAccounts: Int?
+        /// Returns maxDatabases.
+        open fileprivate(set) var maxDatabases: Int?
+
         init() {
         }
-        
-        required init?(map: Map) {
+
+        required public init?(map: Map) {
         }
-        
-        func mapping(map: Map) {
-            parent.name             <- map["name"]
-            parent.maxSpace         <- map["quota.max_space"]
-            parent.maxDomains       <- map["quota.max_domains"]
-            parent.maxMailAccounts  <- map["quota.max_mail_accounts"]
-            parent.maxFtpAccounts   <- map["quota.max_ftp_accounts"]
-            parent.maxDatabases     <- map["quota.max_databases"]
-            parent.domains          <- map["domains"]
+
+        public func mapping(map: Map) {
+            maxSpace <- map["max_space"]
+            maxDomains <- map["max_domains"]
+            maxMailAccounts <- map["max_mail_accounts"]
+            maxFtpAccounts <- map["max_ftp_accounts"]
+            maxDatabases <- map["max_databases"]
         }
     }
-    
+
+    /// This class represents a domain.
+    open class Domain: Mappable {
+        /// Returns domain.
+        open fileprivate(set) var domain: String?
+        /// Returns expires.
+        open fileprivate(set) var expires: String?
+        /// Returns paidUntil.
+        open fileprivate(set) var paidUntil: String?
+        /// Returns status.
+        open fileprivate(set) var status: String?
+
+        init() {
+        }
+
+        required public init?(map: Map) {
+        }
+
+        public func mapping(map: Map) {
+            domain <- map["domain"]
+            expires <- map["expires"]
+            paidUntil <- map["paid_until"]
+            status <- map["status"]
+        }
+    }
     open override func refresh() throws {
         let data = try nitrapi.client.dataGet("services/\(id as Int)/webspaces", parameters: [:])
-        let infos = WebspaceInfo()
-        infos.parent = self
-        _ = Mapper<WebspaceInfo>().map(JSON: data?["webspace"] as! [String : Any], toObject: infos)
+        let datas = WebspaceData()
+        datas.parent = self
+        Mapper<WebspaceData>().map(JSON: data?["webspace"] as! [String : Any], toObject: datas)
     }
-    
-    
-    // MARK: - Internally Used
-    
+
     override func postInit(_ nitrapi: Nitrapi) throws {
         try super.postInit(nitrapi)
-        
+
         if (status == .ACTIVE) {
             try refresh()
         }

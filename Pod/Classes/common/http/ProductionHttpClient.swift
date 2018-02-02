@@ -24,33 +24,44 @@ open class ProductionHttpClient {
     // MARK: - HTTP Operations
     
     /// send a GET request
-    open func dataGet(_ url: String, parameters: Dictionary<String, String>) throws -> NSDictionary? {
+    open func dataGet(_ url: String, parameters: Dictionary<String, Any?>) throws -> NSDictionary? {
         var params = parameters
         params["access_token"] = accessToken
         if let lc = locale { params["locale"] = lc }
-        let res = Just.get(nitrapiUrl + url, params: params, headers: additionalHeaders)
+        let res = Just.get(nitrapiUrl + url, params: removeEmptyParameters(params), headers: additionalHeaders)
         return try parseResult(res)
     }
     
     /// send a POST request
-    open func dataPost(_ url: String,parameters: Dictionary<String, String>) throws -> NSDictionary? {
-        let res = Just.post(nitrapiUrl + url, params: ["access_token": accessToken, "locale": locale ?? "en"], data: parameters, headers: additionalHeaders)
+    open func dataPost(_ url: String,parameters: Dictionary<String, Any?>) throws -> NSDictionary? {
+        let res = Just.post(nitrapiUrl + url, params: ["access_token": accessToken, "locale": locale ?? "en"], data: removeEmptyParameters(parameters), headers: additionalHeaders)
 
         return try parseResult(res)
     }
     
     /// send a PUT request
-    open func dataPut(_ url: String,parameters: Dictionary<String, String>) throws -> NSDictionary? {
-        let res = Just.put(nitrapiUrl + url, params: ["access_token": accessToken, "locale": locale ?? "en"], data: parameters, headers: additionalHeaders)
+    open func dataPut(_ url: String,parameters: Dictionary<String, Any?>) throws -> NSDictionary? {
+        let res = Just.put(nitrapiUrl + url, params: ["access_token": accessToken, "locale": locale ?? "en"], data: removeEmptyParameters(parameters), headers: additionalHeaders)
         
         return try parseResult(res)
     }
     
     /// send a DELETE request
-    open func dataDelete(_ url: String, parameters: Dictionary<String, String>) throws -> NSDictionary? {
-        let res = Just.delete(nitrapiUrl + url, params: ["access_token": accessToken, "locale": locale ?? "en"], data: parameters, headers: additionalHeaders)
+    open func dataDelete(_ url: String, parameters: Dictionary<String, Any?>) throws -> NSDictionary? {
+        let res = Just.delete(nitrapiUrl + url, params: ["access_token": accessToken, "locale": locale ?? "en"], data: removeEmptyParameters(parameters), headers: additionalHeaders)
         
        return try parseResult(res)
+    }
+    
+    func removeEmptyParameters(_ parameters: Dictionary<String, Any?>) -> Dictionary<String, String> {
+        var result: Dictionary<String, String> = [:]
+        
+        for (name, value) in parameters {
+            if let value = value {
+                result[name] = String(describing: value)
+            }
+        }
+        return result
     }
     
     
