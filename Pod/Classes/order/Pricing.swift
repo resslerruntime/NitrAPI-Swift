@@ -93,8 +93,6 @@ open class Pricing {
             ])
         
         if let obj = data?["extend"] as? Dictionary<String, AnyObject> {
-            let pricesRaw = obj["prices"]
-            
             if let prices = obj["prices"]! as? Dictionary<String, AnyObject> {
                 return prices["\(rentalTime)"] as? Int
             }
@@ -102,13 +100,17 @@ open class Pricing {
         return nil
     }
         
-    open func doExtendService(_ service: Int, rentalTime: Int, price: Int) throws {
-        _ = try nitrapi.client.dataPost("order/order/\(product as String)", parameters: [
+    open func doExtendService(_ service: Int, rentalTime: Int, price: Int) throws -> Int? {
+        let data = try nitrapi.client.dataPost("order/order/\(product as String)", parameters: [
             "price": "\(price)",
             "rental_time": "\(rentalTime)",
             "service_id": "\(service)",
             "method": "extend"
             ])
+        if let obj = data?["order"] as? Dictionary<String, AnyObject> {
+            return obj["service_id"] as? Int
+        }
+        return nil
     }
     
     open func calcAdvicePrice(price: Double, advice: Double, service: Service?) -> Int {
@@ -134,12 +136,13 @@ open class Pricing {
     open func getPrice(_ service: Service?, rentalTime: Int) throws -> Int {
         return -1
     }
-    open func orderService(_ rentalTime: Int) throws {
+    open func orderService(_ rentalTime: Int) throws -> Int? {
+        return nil
     }
     open func getSwitchPrice(_ service: Service?, rentalTime: Int) throws -> Int {
         return try getPrice(service, rentalTime: rentalTime)
     }
-    open func switchService(_ service: Service, rentalTime: Int) throws {
-        
+    open func switchService(_ service: Service, rentalTime: Int) throws -> Int? {
+        return nil
     }
 }

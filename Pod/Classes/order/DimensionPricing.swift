@@ -50,7 +50,7 @@ open class DimensionPricing: Pricing {
         throw NitrapiError.nitrapiException(message: "Misformated json for dimension \(calcPath(dims))", errorId: nil)
     }
     
-    open override func orderService(_ rentalTime: Int) throws {
+    open override func orderService(_ rentalTime: Int) throws -> Int? {
         var params = [
             "price": "\(try getPrice(rentalTime))",
             "rental_time": "\(rentalTime)",
@@ -64,10 +64,14 @@ open class DimensionPricing: Pricing {
             params["additionals[\(key)"] = value
         }
         
-        _ = try nitrapi.client.dataPost("order/order/\(product as String)", parameters: params)
+        let data = try nitrapi.client.dataPost("order/order/\(product as String)", parameters: params)
+        if let obj = data?["order"] as? Dictionary<String, AnyObject> {
+            return obj["service_id"] as? Int
+        }
+        return nil
     }
     
-    open override func switchService(_ service: Service, rentalTime: Int) throws {
+    open override func switchService(_ service: Service, rentalTime: Int) throws -> Int? {
         var params = [
             "price": "\(try getSwitchPrice(service, rentalTime: rentalTime))",
             "rental_time": "\(rentalTime)",
@@ -84,6 +88,10 @@ open class DimensionPricing: Pricing {
             params["additionals[\(key)"] = value
         }
         
-        _ = try nitrapi.client.dataPost("order/order/\(product as String)", parameters: params)
+        let data = try nitrapi.client.dataPost("order/order/\(product as String)", parameters: params)
+        if let obj = data?["order"] as? Dictionary<String, AnyObject> {
+            return obj["service_id"] as? Int
+        }
+        return nil
     }
 }
