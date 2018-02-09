@@ -129,7 +129,7 @@ open class Gameserver: Service {
             parent.path                         <-  map["game_specific.path"]
             parent.pathAvailable                <-  map["game_specific.path_available"]
             parent.updateStatus                 <- (map["game_specific.update_status"], ValueTransform<UpdateStatus>())
-            parent.lastUpdate                   <-  map["game_specific.last_update"]
+            parent.lastUpdate                   <- (map["game_specific.last_update"], Nitrapi.dft)
             parent.hasBackups                   <-  map["game_specific.features.has_backups"]
             parent.hasApplicationServer         <-  map["game_specific.features.has_application_server"]
             parent.hasFileBrowser               <-  map["game_specific.features.has_file_browser"]

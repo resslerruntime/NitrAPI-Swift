@@ -53,12 +53,12 @@ open class ProductionHttpClient {
        return try parseResult(res)
     }
     
-    func removeEmptyParameters(_ parameters: Dictionary<String, Any?>) -> Dictionary<String, String> {
-        var result: Dictionary<String, String> = [:]
+    func removeEmptyParameters(_ parameters: Dictionary<String, Any?>) -> Dictionary<String, Any> {
+        var result: Dictionary<String, Any> = [:]
         
         for (name, value) in parameters {
             if let value = value {
-                result[name] = String(describing: value)
+                result[name] = value
             }
         }
         return result
