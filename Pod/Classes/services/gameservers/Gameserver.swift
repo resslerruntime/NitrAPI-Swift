@@ -156,19 +156,19 @@ open class Gameserver: Service {
     // MARK: - Actions
     
     open func doRestart() throws {
-        _ = try nitrapi.client.dataPost("services/\(id as Int)/gameservers/restart", parameters: ["message": "Server restart requested (iOS app)"])
+        _ = try nitrapi.client.dataPost("services/\(id as Int)/gameservers/restart", parameters: ["message": "Server restart requested (\(nitrapi.applicationName))"])
     }
     
     open func doStop() throws {
-        _ = try nitrapi.client.dataPost("services/\(id as Int)/gameservers/stop", parameters: ["message": "Server stop requested (iOS app)"])
+        _ = try nitrapi.client.dataPost("services/\(id as Int)/gameservers/stop", parameters: ["message": "Server stop requested (\(nitrapi.applicationName))"])
     }
     
     open func doRestart(message: String) throws {
-        _ = try nitrapi.client.dataPost("services/\(id as Int)/gameservers/restart", parameters: ["restart_message": message, "message": "Server restart requested (iOS app)"])
+        _ = try nitrapi.client.dataPost("services/\(id as Int)/gameservers/restart", parameters: ["restart_message": message, "message": "Server restart" + " requested (\(nitrapi.applicationName))"])
     }
 
     open func doStop(message: String) throws {
-        _ = try nitrapi.client.dataPost("services/\(id as Int)/gameservers/stop", parameters: ["stop_message": message, "message": "Server stop requested (iOS app)"])
+        _ = try nitrapi.client.dataPost("services/\(id as Int)/gameservers/stop", parameters: ["stop_message": message, "message": "Server stop requested (\(nitrapi.applicationName))"])
     }
     
  

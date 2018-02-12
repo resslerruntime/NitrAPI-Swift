@@ -31,7 +31,7 @@ open class Customer: Mappable {
     /// Returns activated two factor authentication methods.
     open fileprivate(set) var twoFactor: [String]?
     /// Returns personal details of the user.
-    open fileprivate(set) var profile: [String: String?]?
+    open fileprivate(set) var profile: [String: String]?
 
     init() {
     }

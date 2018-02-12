@@ -4,7 +4,7 @@ import ObjectMapper
 open class Webspace: Service {
 
     /// Returns name.
-    open fileprivate(set) var name: String!
+    open fileprivate(set) var name: String?
     /// Returns quota.
     open fileprivate(set) var quota: Quota?
     /// Returns domains.

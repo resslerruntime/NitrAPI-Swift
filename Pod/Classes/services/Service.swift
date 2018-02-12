@@ -48,6 +48,7 @@ open class Service: Mappable {
     open fileprivate(set) var username: String?
     open fileprivate(set) var comment: String?
     open fileprivate(set) var autoExtension: Bool?
+    open fileprivate(set) var autoExtensionDuration: Int?
     open fileprivate(set) var typeHuman: String?
     open fileprivate(set) var details: ServiceDetails?
     open fileprivate(set) var roles: [Role]?
@@ -69,6 +70,7 @@ open class Service: Mappable {
         username                    <-  map["username"]
         comment                     <-  map["comment"]
         autoExtension               <-  map["auto_extension"]
+        autoExtensionDuration       <-  map["auto_extension_duration"]
         typeHuman                   <-  map["type_human"]
         details                     <-  map["details"]
         roles                       <- (map["roles"], ValueTransform<Role>())

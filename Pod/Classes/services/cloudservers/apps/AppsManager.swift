@@ -61,7 +61,7 @@ open class AppsManager: Mappable {
         /// Returns parsedCmd.
         open fileprivate(set) var parsedCmd: String?
         /// Returns parameters.
-        open fileprivate(set) var parameters: [String: Any]?
+        open fileprivate(set) var parameters: [String: String]?
         /// Returns configurations.
         open fileprivate(set) var configurations: [String: String]?
 
