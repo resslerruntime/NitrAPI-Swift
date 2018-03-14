@@ -31,7 +31,7 @@ open class Customer: Mappable {
     /// Returns activated two factor authentication methods.
     open fileprivate(set) var twoFactor: [String]?
     /// Returns personal details of the user.
-    open fileprivate(set) var profile: [String: String]?
+    open fileprivate(set) var profile: Profile?
 
     init() {
     }
@@ -75,6 +75,40 @@ open class Customer: Mappable {
             number <- map["number"]
             countryCode <- map["country_code"]
             verified <- map["verified"]
+        }
+    }
+
+    /// personal details of the user
+    open class Profile: Mappable {
+        /// Returns name.
+        open fileprivate(set) var name: String?
+        /// Returns street.
+        open fileprivate(set) var street: String?
+        /// Returns postcode.
+        open fileprivate(set) var postcode: String?
+        /// Returns city.
+        open fileprivate(set) var city: String?
+        /// Returns country.
+        open fileprivate(set) var country: String?
+        /// Returns state.
+        open fileprivate(set) var state: String?
+        /// Returns true if the user verified that this country is correct.
+        open fileprivate(set) var countryAndStateVerified: Bool?
+
+        init() {
+        }
+
+        required public init?(map: Map) {
+        }
+
+        public func mapping(map: Map) {
+            name <- map["name"]
+            street <- map["street"]
+            postcode <- map["postcode"]
+            city <- map["city"]
+            country <- map["country"]
+            state <- map["state"]
+            countryAndStateVerified <- map["country_and_state_verified"]
         }
     }
 
