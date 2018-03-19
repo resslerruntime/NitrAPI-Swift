@@ -1,78 +1,113 @@
 import ObjectMapper
 
+/// This class represents an AccountOverview.
 open class AccountOverview: Mappable {
-    
-    open fileprivate(set) var from: Date?
-    open fileprivate(set) var end: Date?
-    open fileprivate(set) var payments: [Payment]?
-    
-    public required init?(map: Map) {
+
+    public class IncOrDec: Value, CustomStringConvertible {
+        public static let INCREASE = IncOrDec("increase")
+
+        public static let DECREASE = IncOrDec("decrease")
+        public var description: String {
+            return value
+        }
     }
-    
-    open func mapping(map: Map) {
+
+    /// Returns from.
+    open fileprivate(set) var from: Date?
+    /// Returns end.
+    open fileprivate(set) var end: Date?
+    /// Returns payments.
+    open fileprivate(set) var payments: [Payment]?
+
+    init() {
+    }
+
+    required public init?(map: Map) {
+    }
+
+    public func mapping(map: Map) {
         from <- (map["from"], Nitrapi.dft)
         end <- (map["end"], Nitrapi.dft)
         payments <- map["payments"]
     }
-    
-    public class IncOrDec: Value {
-        public static let INCREASE = IncOrDec("increase")
-        public static let DECREASE = IncOrDec("decrease")
-    }
-    
-    open class Payment: Mappable {
-        open fileprivate(set) var id: Int?
-        open fileprivate(set) var invoiceId: String?
-        open fileprivate(set) var serviceId: Int?
-        open fileprivate(set) var switchedServiceId: Int?
-        open fileprivate(set) var donation: Donation?
-        open fileprivate(set) var date: Date?
-        open fileprivate(set) var method: String?
-        open fileprivate(set) var duration: Int?
-        open fileprivate(set) var amount: Int?
-        open fileprivate(set) var type: IncOrDec?
-        open fileprivate(set) var currency: String?
-        open fileprivate(set) var ip: String?
-        open fileprivate(set) var refundable: Bool?
-        open fileprivate(set) var providerFee: Int?
-        open fileprivate(set) var lastStatus: String?
-        
-        public required init?(map: Map) {
-            id                  <- map["id"]
-            invoiceId           <- map["invoice_id"]
-            serviceId           <- map["service_id"]
-            switchedServiceId   <- map["switched_service_id"]
-            donation            <- map["donation"]
-            date                <- (map["date"], Nitrapi.dft)
-            method              <- map["method"]
-            duration            <- map["duration"]
-            amount              <- map["amount"]
-            type                <- (map["type"], ValueTransform<IncOrDec>())
-            currency            <- map["currency"]
-            ip                  <- map["ip"]
-            refundable          <- map["refundable"]
-            providerFee         <- map["provider_fee"]
-            lastStatus          <- map["last_status"]
-        
-        }
-        
-        open func mapping(map: Map) {
-        }
-    }
-    
+
+    /// This class represents a donation.
     open class Donation: Mappable {
-        
+        /// Returns senderUserId.
         open fileprivate(set) var senderUserId: Int?
+        /// Returns receiverUserId.
         open fileprivate(set) var receiverUserId: Int?
+        /// Returns subject.
         open fileprivate(set) var subject: String?
-        
-        public required init?(map: Map) {
+
+        init() {
         }
-        
-        open func mapping(map: Map) {
-            senderUserId    <- map["sender_user_id"]
-            receiverUserId  <- map["receiver_user_id"]
-            subject         <- map["subject"]
+
+        required public init?(map: Map) {
+        }
+
+        public func mapping(map: Map) {
+            senderUserId <- map["sender_user_id"]
+            receiverUserId <- map["receiver_user_id"]
+            subject <- map["subject"]
+        }
+    }
+
+    /// This class represents a Payment.
+    open class Payment: Mappable {
+        /// Returns id.
+        open fileprivate(set) var id: Int?
+        /// Returns invoiceId.
+        open fileprivate(set) var invoiceId: String?
+        /// Returns serviceId.
+        open fileprivate(set) var serviceId: Int?
+        /// Returns switchedServiceId.
+        open fileprivate(set) var switchedServiceId: Int?
+        /// Returns donation.
+        open fileprivate(set) var donation: Donation?
+        /// Returns date.
+        open fileprivate(set) var date: Date?
+        /// Returns method.
+        open fileprivate(set) var method: String?
+        /// Returns duration.
+        open fileprivate(set) var duration: Int?
+        /// Returns amount.
+        open fileprivate(set) var amount: Int?
+        /// Returns incOrDec.
+        open fileprivate(set) var incOrDec: IncOrDec?
+        /// Returns currency.
+        open fileprivate(set) var currency: String?
+        /// Returns ip.
+        open fileprivate(set) var ip: String?
+        /// Returns refundable.
+        open fileprivate(set) var refundable: Bool?
+        /// Returns providerFee.
+        open fileprivate(set) var providerFee: Int?
+        /// Returns lastStatus.
+        open fileprivate(set) var lastStatus: String?
+
+        init() {
+        }
+
+        required public init?(map: Map) {
+        }
+
+        public func mapping(map: Map) {
+            id <- map["id"]
+            invoiceId <- map["invoice_id"]
+            serviceId <- map["service_id"]
+            switchedServiceId <- map["switched_service_id"]
+            donation <- map["donation"]
+            date <- (map["date"], Nitrapi.dft)
+            method <- map["method"]
+            duration <- map["duration"]
+            amount <- map["amount"]
+            incOrDec <- (map["type"], ValueTransform<IncOrDec>())
+            currency <- map["currency"]
+            ip <- map["ip"]
+            refundable <- map["refundable"]
+            providerFee <- map["provider_fee"]
+            lastStatus <- map["last_status"]
         }
     }
 }

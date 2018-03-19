@@ -1,24 +1,24 @@
 import ObjectMapper
 
+/// This class represents the list of games that can be installed on a server.
 open class GameList: Mappable {
-    
-    // MARK: - Attributes
+
+    /// Returns the number of currently installed games.
     open fileprivate(set) var currentlyInstalled: Int?
+    /// Returns the maximum amount of games that can be installed.
     open fileprivate(set) var maximumInstalled: Int?
-    /// List of all games.
-    open fileprivate(set) var games: [Game]!
-    
-    // MARK: - Initialization
-    
-    public required init?(map: Map) {
-        
+    /// Returns the full list of games.
+    open fileprivate(set) var allGames: [Game]?
+
+    init() {
     }
-    
-    open func mapping(map: Map) {
-        currentlyInstalled  <- map["installed_currently"]
-        maximumInstalled    <- map["installed_maximum"]
-        games               <- map["games"]
+
+    required public init?(map: Map) {
     }
-    
-    
+
+    public func mapping(map: Map) {
+        currentlyInstalled <- map["installed_currently"]
+        maximumInstalled <- map["installed_maximum"]
+        allGames <- map["games"]
+    }
 }

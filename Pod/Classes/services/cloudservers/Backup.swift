@@ -2,26 +2,26 @@ import ObjectMapper
 
 /// This class represents a Backup.
 open class Backup: Mappable {
-    
+
     /// Returns id.
-    open fileprivate(set) var id: String?
+    open fileprivate(set) var id: String!
     /// Returns name.
     open fileprivate(set) var name: String?
     /// Returns createdAt.
     open fileprivate(set) var createdAt: Date?
-    /// TODO enum
+    /// Returns tODO enum.
     open fileprivate(set) var type: String?
     /// Returns setId.
     open fileprivate(set) var setId: String?
-    /// TODO enum
+    /// Returns tODO enum.
     open fileprivate(set) var status: String?
 
     init() {
     }
-    
+
     required public init?(map: Map) {
     }
-    
+
     public func mapping(map: Map) {
         id <- map["id"]
         name <- map["name"]
@@ -30,5 +30,4 @@ open class Backup: Mappable {
         setId <- map["set_id"]
         status <- map["status"]
     }
-    
 }

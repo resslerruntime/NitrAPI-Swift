@@ -45,6 +45,11 @@ open class Gameserver: Service {
         /// The server is currently updating.
         public static let UPDATING = GameserverStatus("updating")
     }
+
+    public class UpdateStatus: Value {
+        public static let UP_TO_DATE = UpdateStatus("up_to_date")
+        public static let IN_PROGRESS = UpdateStatus("update_in_progress")
+    }
     
     // MARK: - Attributes
 
@@ -55,12 +60,14 @@ open class Gameserver: Service {
     open fileprivate(set) var minecraftMode: Bool?
     open fileprivate(set) var ip: String?
     open fileprivate(set) var port: Int?
+    open fileprivate(set) var queryPort: Int?
+    open fileprivate(set) var rconPort: Int?
     /// Label of this gameserver.
     /// You need the label to connect to the websocket.
     open fileprivate(set) var label: String?
     open fileprivate(set) var gameserverType: GameserverType?
     open fileprivate(set) var memory: MemoryType?
-    open fileprivate(set) var memoryTotal: Int?
+    open fileprivate(set) var memoryMB: Int?
     open fileprivate(set) var game: String?
     open fileprivate(set) var gameReadable: String?
     open fileprivate(set) var modpacks: [String: Modpack]?
@@ -74,6 +81,8 @@ open class Gameserver: Service {
     // game specific
     open fileprivate(set) var path: String?
     open fileprivate(set) var pathAvailable: Bool?
+    open fileprivate(set) var updateStatus: UpdateStatus?
+    open fileprivate(set) var lastUpdate: Date?
     open fileprivate(set) var hasBackups: Bool?
     open fileprivate(set) var hasApplicationServer: Bool?
     open fileprivate(set) var hasFileBrowser: Bool?
@@ -102,10 +111,12 @@ open class Gameserver: Service {
             parent.websocketToken               <-  map["websocket_token"]
             parent.minecraftMode                <-  map["minecraft_mode"]
             parent.port                         <-  map["port"]
+            parent.queryPort                    <-  map["query_port"]
+            parent.rconPort                     <-  map["rcon_port"]
             parent.label                        <-  map["label"]
             parent.gameserverType               <- (map["type"], ValueTransform<GameserverType>())
             parent.memory                       <- (map["memory"], ValueTransform<MemoryType>())
-            parent.memoryTotal                  <-  map["memory_total"]
+            parent.memoryMB                     <-  map["memory_mb"]
             parent.game                         <-  map["game"]
             parent.gameReadable                 <-  map["game_human"]
             parent.modpacks                     <-  map["modpacks"]
@@ -117,6 +128,8 @@ open class Gameserver: Service {
             parent.query                        <-  map["query"]
             parent.path                         <-  map["game_specific.path"]
             parent.pathAvailable                <-  map["game_specific.path_available"]
+            parent.updateStatus                 <- (map["game_specific.update_status"], ValueTransform<UpdateStatus>())
+            parent.lastUpdate                   <- (map["game_specific.last_update"], Nitrapi.dft)
             parent.hasBackups                   <-  map["game_specific.features.has_backups"]
             parent.hasApplicationServer         <-  map["game_specific.features.has_application_server"]
             parent.hasFileBrowser               <-  map["game_specific.features.has_file_browser"]
@@ -143,19 +156,19 @@ open class Gameserver: Service {
     // MARK: - Actions
     
     open func doRestart() throws {
-        _ = try nitrapi.client.dataPost("services/\(id as Int)/gameservers/restart", parameters: ["message": "Server restart requested (iOS app)"])
+        _ = try nitrapi.client.dataPost("services/\(id as Int)/gameservers/restart", parameters: ["message": "Server restart requested (\(nitrapi.applicationName))"])
     }
     
     open func doStop() throws {
-        _ = try nitrapi.client.dataPost("services/\(id as Int)/gameservers/stop", parameters: ["message": "Server stop requested (iOS app)"])
+        _ = try nitrapi.client.dataPost("services/\(id as Int)/gameservers/stop", parameters: ["message": "Server stop requested (\(nitrapi.applicationName))"])
     }
     
     open func doRestart(message: String) throws {
-        _ = try nitrapi.client.dataPost("services/\(id as Int)/gameservers/restart", parameters: ["restart_message": message, "message": "Server restart requested (iOS app)"])
+        _ = try nitrapi.client.dataPost("services/\(id as Int)/gameservers/restart", parameters: ["restart_message": message, "message": "Server restart" + " requested (\(nitrapi.applicationName))"])
     }
 
     open func doStop(message: String) throws {
-        _ = try nitrapi.client.dataPost("services/\(id as Int)/gameservers/stop", parameters: ["stop_message": message, "message": "Server stop requested (iOS app)"])
+        _ = try nitrapi.client.dataPost("services/\(id as Int)/gameservers/stop", parameters: ["stop_message": message, "message": "Server stop requested (\(nitrapi.applicationName))"])
     }
     
  

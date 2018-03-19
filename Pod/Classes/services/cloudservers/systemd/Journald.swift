@@ -6,13 +6,13 @@ open class Journald: Mappable {
     fileprivate var id: Int!
     init() {
     }
-    
+
     required public init?(map: Map) {
     }
-    
+
     public func mapping(map: Map) {
     }
-    
+
     /// This class represents a JournalEntry.
     open class JournalEntry: Mappable {
         /// Returns cursor.
@@ -55,13 +55,13 @@ open class Journald: Mappable {
         open fileprivate(set) var message: String?
         /// Returns pid.
         open fileprivate(set) var pid: Int?
-        
+
         init() {
         }
-        
+
         required public init?(map: Map) {
         }
-        
+
         public func mapping(map: Map) {
             cursor <- map["__CURSOR"]
             realtimeTimestamp <- map["__REALTIME_TIMESTAMP"]
@@ -85,31 +85,33 @@ open class Journald: Mappable {
             pid <- map["_PID"]
         }
     }
-    
+
     /// - parameter unit: Filter by unit name. All journal messages are returned if unset.
     /// - parameter cursor: Initial cursor reference obtained from a log event. Seeks to tail if unspecified.
     /// - parameter backlog: Offset from the current log tail, must be >= 0
     /// - parameter count: Number of messages to return, starting at the cursor position specified by backlog. -1 returns all messages and continuously streams any new ones.
-    open func getUrl(unit: String? = nil, cursor: String? = nil, backlog: Int = 20, count: Int = -1) throws -> String? {
-        var params = [
-            "backlog": String(describing: backlog),
-            "count": String(describing: count)
-        ]
-        
-        if let unit = unit {
-            params["unit"] = unit
-        }
-        
-        if let cursor = cursor {
-            params["cursor"] = cursor
-        }
-        
-        let data = try nitrapi.client.dataGet("services/\(id as Int)/cloud_servers/system/journal/", parameters: params)
-        
+    /// - returns: String
+    open func getUrl(_ unit: String?, cursor: String?, backlog: Int?, count: Int?) throws -> String? {
+        let data = try nitrapi.client.dataGet("services/\(id as Int)/cloud_servers/system/journal/", parameters: [
+           "unit": unit,
+           "cursor": cursor,
+           "backlog": backlog,
+           "count": count
+        ])
+
         let tokenurl = (data?["token"] as! [String: Any]) ["url"] as? String
         return tokenurl
     }
-    
+
+
+    /// - returns: [JournalEntry]
+    open func getJournal() throws -> [JournalEntry]? {
+        let data = try nitrapi.client.dataGet("services/\(id as Int)/cloud_servers/system/journal/", parameters: [:])
+
+        let journal = Mapper<JournalEntry>().mapArray(JSONArray: data?["journal"] as! [[String : Any]])
+        return journal
+    }
+
     // MARK: - Internally used
     func postInit(_ nitrapi: Nitrapi, id: Int) {
         self.nitrapi = nitrapi

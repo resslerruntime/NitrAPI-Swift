@@ -25,6 +25,8 @@ open class CloudServer: Service {
         public static let ERROR_INSTALL = CloudserverStatus("error_install")
         /// An error occurred while reinstalling the Server. The support has been informed.
         public static let ERROR_REINSTALL = CloudserverStatus("error_reinstall")
+        /// The server is currently in rescue mode.
+        public static let RESCUE = CloudserverStatus("rescue")
     }
     
     /// Returns the status of the CloudServer.
@@ -475,6 +477,19 @@ open class CloudServer: Service {
         
         let traffic = Mapper<TrafficStatistics>().map(JSON: data?["traffic"] as! [String : Any])
         return traffic
+    }
+
+
+    /// Reboot the server into rescue mode.
+    /// This action might result in data loss.
+    open func doRescue() throws {
+        _ = try nitrapi.client.dataPost("services/\(id as Int)/cloud_servers/rescue", parameters: [:])
+    }
+
+    /// Leave the rescue mode and reboot the server.
+    /// This action might result in data loss.
+    open func doUnrescue() throws {
+        _ = try nitrapi.client.dataPost("services/\(id as Int)/cloud_servers/unrescue", parameters: [:])
     }
     
     open override func refresh() throws {

@@ -5,9 +5,9 @@ open class Customer: Mappable {
     fileprivate var nitrapi: Nitrapi!
 
     /// Returns the id of this user.
-    open fileprivate(set) var userId: Int?
+    open fileprivate(set) var userId: Int!
     /// Returns the username.
-    open fileprivate(set) var username: String?
+    open fileprivate(set) var username: String!
     /// Returns true if the user is activated.
     open fileprivate(set) var activated: Bool?
     /// Returns the timezone of this user.
@@ -24,12 +24,14 @@ open class Customer: Mappable {
     open fileprivate(set) var language: String?
     /// Returns the url of the avatar.
     open fileprivate(set) var avatar: String?
+    /// Returns true if donations are enabled.
+    open fileprivate(set) var donations: Bool?
     /// Returns phone.
     open fileprivate(set) var phone: Phone?
     /// Returns activated two factor authentication methods.
     open fileprivate(set) var twoFactor: [String]?
     /// Returns personal details of the user.
-    open fileprivate(set) var profile: [String: String]?
+    open fileprivate(set) var profile: Profile?
 
     init() {
     }
@@ -48,6 +50,7 @@ open class Customer: Mappable {
         registered <- (map["registered"], Nitrapi.dft)
         language <- map["language"]
         avatar <- map["avatar"]
+        donations <- map["donations"]
         phone <- map["phone"]
         twoFactor <- map["two_factor"]
         profile <- map["profile"]
@@ -75,6 +78,40 @@ open class Customer: Mappable {
         }
     }
 
+    /// personal details of the user
+    open class Profile: Mappable {
+        /// Returns name.
+        open fileprivate(set) var name: String?
+        /// Returns street.
+        open fileprivate(set) var street: String?
+        /// Returns postcode.
+        open fileprivate(set) var postcode: String?
+        /// Returns city.
+        open fileprivate(set) var city: String?
+        /// Returns country.
+        open fileprivate(set) var country: String?
+        /// Returns state.
+        open fileprivate(set) var state: String?
+        /// Returns true if the user verified that this country is correct.
+        open fileprivate(set) var countryAndStateVerified: Bool?
+
+        init() {
+        }
+
+        required public init?(map: Map) {
+        }
+
+        public func mapping(map: Map) {
+            name <- map["name"]
+            street <- map["street"]
+            postcode <- map["postcode"]
+            city <- map["city"]
+            country <- map["country"]
+            state <- map["state"]
+            countryAndStateVerified <- map["country_and_state_verified"]
+        }
+    }
+
     /// - returns: AccountOverview
     open func getAccountOverview() throws -> AccountOverview? {
         let data = try nitrapi.client.dataGet("user/account_overview", parameters: [:])
@@ -89,8 +126,8 @@ open class Customer: Mappable {
     /// - returns: AccountOverview
     open func getAccountOverview(_ year: Int, month: Int) throws -> AccountOverview? {
         let data = try nitrapi.client.dataGet("user/account_overview", parameters: [
-            "year": String(describing: year),
-            "month": String(describing: month)
+           "year": year,
+           "month": month
         ])
 
         let account_overview = Mapper<AccountOverview>().map(JSON: data?["account_overview"] as! [String : Any])
@@ -102,7 +139,7 @@ open class Customer: Mappable {
     /// - returns: String
     open func requestUserUpdateToken(_ password: String) throws -> String? {
         let data = try nitrapi.client.dataPost("user/token", parameters: [
-            "password": String(describing: password)
+           "password": password
         ])
 
         let token = data?["token"] as? String
@@ -111,19 +148,19 @@ open class Customer: Mappable {
 
     /// Add phone number.
     /// - parameter number: phone number with country code
-    /// - parameter token: the current user update token
+    /// - parameter token: the update token of the current user
     open func addPhoneNumber(_ number: String, token: String) throws {
         _ = try nitrapi.client.dataPost("user/phone", parameters: [
-            "number": String(describing: number),
-            "token": String(describing: token)
+           "number": number,
+           "token": token
         ])
     }
 
     /// Delete phone number.
-    /// - parameter token: the current user update token
+    /// - parameter token: the update token of the current user
     open func deletePhoneNumber(_ token: String) throws {
         _ = try nitrapi.client.dataDelete("user/phone", parameters: [
-            "token": String(describing: token)
+           "token": token
         ])
     }
 
@@ -131,7 +168,57 @@ open class Customer: Mappable {
     /// - parameter code: Verification code from SMS
     open func verifyPhoneNumber(_ code: String) throws {
         _ = try nitrapi.client.dataPost("user/phone/verify", parameters: [
-            "code": String(describing: code)
+           "code": code
+        ])
+    }
+
+    /// Updates the timezone of the user.
+    /// - parameter timezone: new timezone for the user
+    /// - parameter token: the update token of the current user
+    open func updateTimezone(_ timezone: String, token: String) throws {
+        _ = try nitrapi.client.dataPost("user/", parameters: [
+           "timezone": timezone,
+           "token": token
+        ])
+    }
+
+    /// Updates the profile information.
+    /// - parameter token: the update token of the current user
+    /// - parameter name: name
+    /// - parameter street: street
+    /// - parameter postcode: postcode
+    /// - parameter city: city
+    /// - parameter country: country
+    /// - parameter state: state
+    open func updateProfile(_ token: String, name: String?, street: String?, postcode: String?, city: String?, country: String?, state: String?) throws {
+        _ = try nitrapi.client.dataPost("user/", parameters: [
+           "token": token,
+           "profile[name]": name,
+           "profile[street]": street,
+           "profile[postcode]": postcode,
+           "profile[city]": city,
+           "profile[country]": country,
+           "profile[state]": state
+        ])
+    }
+
+    /// Updates the password.
+    /// - parameter password: the new password
+    /// - parameter token: The update token of the current user
+    open func updatePassword(_ password: String, token: String) throws {
+        _ = try nitrapi.client.dataPost("user/", parameters: [
+           "password": password,
+           "token": token
+        ])
+    }
+
+    /// Updates the donation setting.
+    /// - parameter donations: true if donations can be received
+    /// - parameter token: The update token of the current user
+    open func updateDonations(_ donations: Bool, token: String) throws {
+        _ = try nitrapi.client.dataPost("user/", parameters: [
+           "donations": donations,
+           "token": token
         ])
     }
 

@@ -24,37 +24,51 @@ open class ProductionHttpClient {
     // MARK: - HTTP Operations
     
     /// send a GET request
-    open func dataGet(_ url: String, parameters: Dictionary<String, String>) throws -> NSDictionary? {
+    open func dataGet(_ url: String, parameters: Dictionary<String, Any?>) throws -> NSDictionary? {
         var params = parameters
-        params["access_token"] = accessToken
-        if let lc = locale { params["locale"] = lc }
-        let res = Just.get(nitrapiUrl + url, params: params, headers: additionalHeaders)
+        additionalHeaders["Authorization"] = "Bearer " + accessToken
+        let res = Just.get(nitrapiUrl + url, params: removeEmptyParameters(params), headers: additionalHeaders)
+
         return try parseResult(res)
     }
     
     /// send a POST request
-    open func dataPost(_ url: String,parameters: Dictionary<String, String>) throws -> NSDictionary? {
-        let res = Just.post(nitrapiUrl + url, params: ["access_token": accessToken, "locale": locale ?? "en"], data: parameters, headers: additionalHeaders)
+    open func dataPost(_ url: String,parameters: Dictionary<String, Any?>) throws -> NSDictionary? {
+        additionalHeaders["Authorization"] = "Bearer " + accessToken
+        let res = Just.post(nitrapiUrl + url, params: ["locale": locale ?? "en"], data: removeEmptyParameters(parameters), headers: additionalHeaders)
 
         return try parseResult(res)
     }
     
     /// send a PUT request
-    open func dataPut(_ url: String,parameters: Dictionary<String, String>) throws -> NSDictionary? {
-        let res = Just.put(nitrapiUrl + url, params: ["access_token": accessToken, "locale": locale ?? "en"], data: parameters, headers: additionalHeaders)
+    open func dataPut(_ url: String,parameters: Dictionary<String, Any?>) throws -> NSDictionary? {
+        additionalHeaders["Authorization"] = "Bearer " + accessToken
+        let res = Just.put(nitrapiUrl + url, params: ["locale": locale ?? "en"], data: removeEmptyParameters(parameters), headers: additionalHeaders)
         
         return try parseResult(res)
     }
     
     /// send a DELETE request
-    open func dataDelete(_ url: String, parameters: Dictionary<String, String>) throws -> NSDictionary? {
-        let res = Just.delete(nitrapiUrl + url, params: ["access_token": accessToken, "locale": locale ?? "en"], data: parameters, headers: additionalHeaders)
-        
+    open func dataDelete(_ url: String, parameters: Dictionary<String, Any?>) throws -> NSDictionary? {
+        additionalHeaders["Authorization"] = "Bearer " + accessToken
+        let res = Just.delete(nitrapiUrl + url, params: ["locale": locale ?? "en"], data: removeEmptyParameters(parameters), headers: additionalHeaders)
+
        return try parseResult(res)
     }
     
+    func removeEmptyParameters(_ parameters: Dictionary<String, Any?>) -> Dictionary<String, Any> {
+        var result: Dictionary<String, Any> = [:]
+        
+        for (name, value) in parameters {
+            if let value = value {
+                result[name] = value
+            }
+        }
+        return result
+    }
     
-    func parseResult(_ res: HTTPResult) throws -> NSDictionary? {
+    
+    open func parseResult(_ res: HTTPResult) throws -> NSDictionary? {
         // get rate limit
         if res.headers["X-RateLimit-Limit"] != nil {
             rateLimit = Int(res.headers["X-RateLimit-Limit"]!)!
