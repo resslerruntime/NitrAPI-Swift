@@ -18,7 +18,7 @@
 		607FACE51AFB9204008FA782 /* nitrapi_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = nitrapi_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
-		93263EFFC59BEF40949F5E2F /* nitrapi.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = nitrapi.podspec; path = ../nitrapi.podspec; sourceTree = "<group>"; };
+		93263EFFC59BEF40949F5E2F /* nitrapi.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = nitrapi.podspec; path = ../nitrapi.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		A1B7A2A577C169D5EF7B2CE1 /* Pods_nitrapi_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_nitrapi_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A8DDFBA518078FFE3402A97B /* Pods-nitrapi_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-nitrapi_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-nitrapi_Tests/Pods-nitrapi_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		B04640584D4D9470BE7DA0B4 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
