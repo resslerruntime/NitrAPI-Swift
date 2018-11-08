@@ -15,6 +15,7 @@ open class Nitrapi {
     open static var dft: DateFormatterTransform = {
         var form = DateFormatter()
         form.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        form.locale = Locale(identifier: "en_US_POSIX")
         return DateFormatterTransform(dateFormatter: form)
     }()
 
